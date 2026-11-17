@@ -10,8 +10,8 @@ Pipeline de datos con arquitectura medallion: **Bronze → Silver → Gold**.
 
 ```mermaid
 flowchart LR
-    B[("🥉 Bronze<br/>ventas.csv<br/>clientes.json<br/>logs.txt")] -->|limpieza y normalizacion| S[("🥈 Silver<br/>clean_sales.csv<br/>clean_customers.csv")]
-    S -->|agregaciones OLAP| G[("🥇 Gold<br/>ventas por cliente<br/>ingresos por producto")]
+    B[("🥉 Bronze<br/>ventas.csv<br/>clientes.json<br/>logs.txt")] -->|limpieza y normalizacion| S[("🥈 Silver<br/>clean_sales.csv<br/>clean_customers.csv<br/>clean_logs.csv")]
+    S -->|agregaciones OLAP| G[("🥇 Gold<br/>sales_by_customer.csv<br/>revenue_by_product.csv")]
 ```
 
 ## 👥 Equipo
@@ -26,22 +26,26 @@ flowchart LR
 
 ```
 data_lab/
-├── bronze/   # datos crudos (ventas.csv, clientes.json, logs.txt)
-├── silver/   # clean_sales.csv, clean_customers.csv
-└── gold/     # tablas analiticas finales
-src/          # scripts Python (bronze_analysis, silver_clean, gold_analytics)
-docs/         # informes y evidencia de uso de IA
+├── bronze/   # datos crudos del ZIP (ventas.csv, clientes.json, logs.txt)
+├── silver/   # clean_sales.csv, clean_customers.csv, clean_logs.csv
+└── gold/     # sales_by_customer.csv, revenue_by_product.csv
+src/          # scripts Python comentados (common, bronze_analysis, silver_clean, gold_analytics)
+docs/         # informes (bronze_report, final_report) y evidencia de uso de IA (ai_usage)
 ```
+
+> Nota: el enunciado en PDF nombra `sales.csv` y `customers.json`, pero el dataset entregado viene como `ventas.csv` y `clientes.json`.
 
 ## 🔗 Contrato Silver
 
 - `clean_sales.csv`: `id_pedido,id_cliente,producto,importe`
 - `clean_customers.csv`: `id_cliente,nombre,pais`
+- `clean_logs.csv`: `nivel,id_cliente,action`
 
 ## 🚀 Como ejecutar
 
 ```bash
 pip install -r requirements.txt
+python src/bronze_analysis.py
 python src/silver_clean.py
 python src/gold_analytics.py
 ```
