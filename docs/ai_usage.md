@@ -46,7 +46,20 @@ Documento de trazabilidad del uso de Inteligencia Artificial para la entrega de 
 
 ---
 
-## 2. Capa Silver — `@MauroPB30` *(Issues #3 y #4 — por completar)*
+## 2. Capa Silver — `@Ignaciobrenas` (Issue #3) y `@gorkarmz` (Issue #4)
+
+### Issue #3 — Limpieza y normalización de ventas (`@Ignaciobrenas`)
+- **Herramienta y modelo utilizados:** Google Antigravity (`Gemini 4 Hydrogen`)
+- **Prompt utilizado:**
+  > Implementa el Issue #3 en `src/silver_clean.py` (`clean_sales`) y genera automáticamente `data_lab/silver/clean_sales.csv`: ignora las líneas en blanco de `ventas.csv`, filtra IDs nulos/vacíos/no válidos, importes no numéricos o `<= 0`, registros de prueba/debug y outliers artificiales (`producto=test`, `importe=9999`, cuentas `TestUser`/`Debug`) y clientes inexistentes; normaliza nombres y tipos (`id_pedido` e `id_cliente` `int`, `producto` en minúsculas, `importe` `float`), deduplica por `id_pedido`, comenta la lógica del script y verifica el resultado.
+- **Salidas generadas:**
+  - Implementación comentada de `src/silver_clean.py` (`_parse_positive_int`, `_parse_positive_float`, `load_valid_customer_ids`, `clean_sales`, `main`), preparada para integrarse con `clean_customers()` y `clean_logs()` en el Issue #4.
+  - Generación automática de `data_lab/silver/clean_sales.csv` tras ejecutar `python src/silver_clean.py` y `python -m src.silver_clean` (código de salida `0`):
+    - Líneas crudas leídas: `218` (`17` líneas en blanco ignoradas, `200` filas de datos).
+    - Registros descartados: `8` (`id_pedido` `5, 6, 7, 15, 29, 30, 107, 108`).
+    - Registros limpios escritos en `clean_sales.csv`: `192` (`id_pedido,id_cliente,producto,importe`), ordenados por `id_pedido` ascendente y validados mediante aserciones de esquema, tipos e integridad referencial.
+
+### Issue #4 — Limpieza de clientes y logs (`@gorkarmz`) *(por completar)*
 - **Herramienta y modelo utilizados:** *(indicar herramienta/modelo si se utiliza IA)*
 - **Prompts utilizados:** *(añadir aquí)*
 - **Salidas generadas:** *(añadir aquí)*
