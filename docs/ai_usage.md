@@ -59,10 +59,33 @@ Documento de trazabilidad del uso de Inteligencia Artificial para la entrega de 
     - Registros descartados: `8` (`id_pedido` `5, 6, 7, 15, 29, 30, 107, 108`).
     - Registros limpios escritos en `clean_sales.csv`: `192` (`id_pedido,id_cliente,producto,importe`), ordenados por `id_pedido` ascendente y validados mediante aserciones de esquema, tipos e integridad referencial.
 
-### Issue #4 — Limpieza de clientes y logs (`@gorkarmz`) *(por completar)*
-- **Herramienta y modelo utilizados:** *(indicar herramienta/modelo si se utiliza IA)*
-- **Prompts utilizados:** *(añadir aquí)*
-- **Salidas generadas:** *(añadir aquí)*
+### Issue #4 — Limpieza de clientes y logs (`@gorkarmz`)
+- **Herramienta y modelo utilizados:** Google Antigravity (`Gemini 3.8 Flash`)
+- **Prompt utilizado:**
+  > Revisa en la rama `4-silver-limpiar-clientes-y-logs---clean_customerscsv` la Issue #4 e implementa todo lo requerido:
+  > - Parsear `data_lab/bronze/clientes.json` (array JSON con líneas en blanco intercaladas) y convertir `id_cliente` a `int` (ej. `"120"` -> `120`).
+  > - Normalizar valores faltantes o inválidos: `nombre` vacío/null (`112`) -> `desconocido`; `pais` null, vacío o `"??"` (`117`, `138`, `200`) -> `desconocido`; limpiar espacios y estandarizar formato (país en mayúsculas salvo `desconocido`).
+  > - Filtrar cuentas de prueba/debug (`200 TestUser`, `201 Debug`) para evitar distorsiones en Gold.
+  > - Deduplicar clientes por `id_cliente` (sin deduplicar por `nombre`, preservando `101 Ana` y `111 Ana`).
+  > - Limpiar `data_lab/bronze/logs.txt` (`clean_logs`): descartar líneas en blanco, eventos `[ERROR]`, eventos `[DEBUG]` (`action=test`), líneas sin `user=` (línea 22) o con `action=` vacío (líneas 23, 117), y usuarios no numéricos o inexistentes (`abc`, `xyz`, `999`); estandarizar `user` a `id_cliente` (`int`) y exportar `clean_logs.csv` (`nivel,id_cliente,action`) sin eliminar clientes reales con errores en log de `clean_customers.csv`.
+  > - Procesamiento 100% automático en Python en `src/silver_clean.py` comentado explicando la lógica y trazabilidad en `docs/ai_usage.md`.
+- **Salidas generadas:**
+  - Implementación completa, tipada y comentada de `clean_customers()` y `clean_logs()` en `src/silver_clean.py`, actualizando `main()` para ejecutar la secuencia completa de la capa Silver (`clean_customers` -> `clean_logs` -> `clean_sales`).
+  - Generación de `data_lab/silver/clean_customers.csv` (`248` registros limpios, `id_cliente,nombre,pais`):
+    - 250 registros procesados desde `clientes.json` (22 líneas en blanco ignoradas).
+    - Conversión de `id_cliente` `"120"` a entero `120`.
+    - Normalización de cliente `112` con `nombre` vacío a `desconocido`.
+    - Normalización de país en cliente `117` (`null`) y `138` (`"??"`) a `desconocido`.
+    - Conversión de países válidos a mayúsculas (`ES`, `FR`, `IT`, `PT`, `DE`, `UK`).
+    - Exclusión de cuentas sintéticas `200 TestUser` y `201 Debug`.
+    - Preservación de clientes homónimos `101 Ana` y `111 Ana`.
+    - Orden determinista por `id_cliente` ascendente.
+  - Generación de `data_lab/silver/clean_logs.csv` (`162` registros limpios, `nivel,id_cliente,action`):
+    - 207 líneas analizadas de `logs.txt`.
+    - Descarte de 45 registros defectuosos o excluidos: 2 líneas en blanco, 35 eventos `[ERROR]` (incluyendo `user=999`, `user=abc`, `user=xyz`), 4 eventos `[DEBUG]` (`action=test`, incluyendo `user=201`), 1 línea sin `user=` (línea 22), 2 líneas con `action=` vacío (líneas 23 y 117) y 1 evento de cuenta test/debug (`user=200`, línea 104).
+    - Estandarización de `user` a `id_cliente` (`int`) y preservación de niveles legítimos (`INFO`, `WARN`).
+    - Validación de que los 31 clientes reales con errores en los logs se mantienen intactos en `clean_customers.csv`.
+  - Verificación exitosa mediante ejecución directa `python src/silver_clean.py` y como módulo `python -m src.silver_clean` con código de salida `0` y aserciones completas de integridad.
 
 ---
 
