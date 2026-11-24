@@ -104,3 +104,19 @@ Documento de trazabilidad del uso de Inteligencia Artificial para la entrega de 
     - `revenue_by_product.csv`: `monitor` 13190.0 (64 pedidos), `teclado` 1980.0 (66), `raton` 1245.0 (62).
     - Total revenue: `16415.00` (coincide por clientes y por producto).
     - El cliente `201 Debug` no aparece en Gold porque ya se excluyó en Silver.
+
+---
+
+## 4. Documentación Final y Verificación Integral — `@Ignaciobrenas`, `@gorkarmz`, `@MauroPB30` *(Issue #7)*
+
+### Issue #7 — README, informe final y evidencia de IA
+- **Herramienta y modelo utilizados:** Google Antigravity (`Gemini 4 Argon`)
+- **Prompt utilizado:**
+  > Revisa que todo esté limpiado correctamente en `main` y que todo sea correcto. Cierra los issues #5 y #6 ya mergeados, crea y enlaza la rama de documentación desde el Issue #7, completa `docs/final_report.md` respondiendo a todas las preguntas del PDF (Generales, Bronze, Silver y Gold), actualiza `README.md` y `docs/ai_usage.md`, estandariza `src/gold_analytics.py` con `src/common.py` y `main()`, verifica la ejecución automática de todo el pipeline y deja preparada la Pull Request hacia `main` sin mergearla.
+- **Salidas generadas:**
+  - Auditoría completa de los datasets `data_lab/silver/` (`clean_customers.csv` con 248 clientes, `clean_logs.csv` con 162 eventos, `clean_sales.csv` con 192 pedidos) y `data_lab/gold/` (`sales_by_customer.csv` con 189 clientes/192 pedidos y `revenue_by_product.csv` con 3 productos y `Total revenue = 16415.00`).
+  - Creación de `docs/final_report.md` consolidando la arquitectura Medallion, las respuestas directas a todas las preguntas del PDF, el resumen técnico de las capas Bronze, Silver y Gold y la verificación de procesamiento 100 % automático.
+  - Actualización de `README.md` con estado `completed`, tabla de equipo actualizada, estructura completa del proyecto, contrato de datos, resultados principales e instrucciones de ejecución.
+  - Estandarización de `src/gold_analytics.py` para reutilizar `SILVER_DIR`, `GOLD_DIR` y `ensure_output_dirs` desde `src/common.py` bajo un punto de entrada `main()`.
+  - Verificación de ejecución de principio a fin (`python src/bronze_analysis.py`, `python src/silver_clean.py`, `python src/gold_analytics.py`) con código de salida `0` y sin diferencias en los CSVs generados.
+
