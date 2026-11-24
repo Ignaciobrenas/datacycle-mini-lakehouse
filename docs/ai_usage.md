@@ -89,7 +89,18 @@ Documento de trazabilidad del uso de Inteligencia Artificial para la entrega de 
 
 ---
 
-## 3. Capa Gold — `@gorkarmz` *(Issues #5, #6 y #7 — por completar)*
-- **Herramienta y modelo utilizados:** *(indicar herramienta/modelo si se utiliza IA)*
-- **Prompts utilizados:** *(añadir aquí)*
-- **Salidas generadas:** *(añadir aquí)*
+## 3. Capa Gold — `@MauroPB30` *(Issues #5 y #6)*
+
+### Issues #5 y #6 — Ventas por cliente e ingresos por producto
+- **Herramienta y modelo utilizados:** Claude (Anthropic), en claude.ai — Claude Sonnet 5.5
+- **Prompt utilizado:**
+  > Tengo que resolver los issues #5 y #6 de la capa Gold del mini lakehouse (capturas de los issues y enunciado del lab adjuntos). Necesito un script en Python, comentado, que lea solo de `data_lab/silver/`, agrupe por `id_cliente` (no por nombre), genere `sales_by_customer.csv` y `revenue_by_product.csv`, y responda quién es el mayor comprador y qué producto genera más ingresos.
+- **Salidas generadas:**
+  - `src/gold_analytics.py`: lee `clean_sales.csv` y `clean_customers.csv`, hace el join por `id_cliente` (inner), agrupa por `id_cliente, nombre, pais`, ordena por ingresos de mayor a menor, y genera ambos CSV en `data_lab/gold/`. Incluye comprobaciones (`assert`) de que no queda el producto `test` ni el importe `9999`, y una verificación de que los totales por cliente y por producto coinciden.
+  - Resultados al ejecutar `py src/gold_analytics.py`:
+    - `sales_by_customer.csv`: ordenado por `total_sales` (`id_cliente,nombre,pais,num_pedidos,total_sales`).
+    - Mayor comprador por gasto: Pedro (`106`), `300.0`.
+    - Mayor comprador por número de pedidos: Ana (`101`), 4 pedidos / `290.0`. Ana `111` (30.0) se mantiene separada.
+    - `revenue_by_product.csv`: `monitor` 13190.0 (64 pedidos), `teclado` 1980.0 (66), `raton` 1245.0 (62).
+    - Total revenue: `16415.00` (coincide por clientes y por producto).
+    - El cliente `201 Debug` no aparece en Gold porque ya se excluyó en Silver.
