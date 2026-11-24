@@ -44,6 +44,7 @@ datacycle-mini-lakehouse/
 │   ├── silver_clean.py         # Pipeline de limpieza y normalización Bronze -> Silver
 │   └── gold_analytics.py       # Agregaciones de negocio Silver -> Gold
 ├── docs/
+│   ├── Informe_Final_Mini_Lakehouse.docx # Memoria técnica completa en Word con portada e infografías
 │   ├── bronze_report.md        # Informe detallado de la capa Bronze (Parte 1)
 │   ├── gold_report.md          # Informe analítico de la capa Gold (Parte 3)
 │   ├── final_report.md         # Informe final consolidado (Partes 1, 2 y 3 + preguntas PDF)
